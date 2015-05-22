@@ -1,0 +1,27 @@
+<config>
+ <main_database>
+  <hostname>localhost</hostname>
+  <dbname>fnscheck</dbname>
+  <user>SYSDBA</user>
+  <password>vSyWIFgg7</password>
+ </main_database>
+ <rbd>
+  <hostname>10.9.4.11</hostname>
+  <dbname>ncore-rbd</dbname>
+  <user>SYSDBA</user>
+  <password>vSyWIFgg7</password>
+ </rbd>
+<olddb>
+ <hostname>10.9.4.11</hostname>
+ <user>SYSDBA</user>
+ <password>vSyWIFgg7</password>
+ <databases>
+  <db>all2009_01</db>
+
+ </databases>
+</olddb>
+ <input_path>/home/gibdd/in/</input_path>
+ <input_arc_path>/home/gibdd/in_arc/</input_arc_path>
+ <output_path>/home/gibdd/out/</output_path>
+ <output_path2>/home/all/gaiout/</output_path2>
+</config>
