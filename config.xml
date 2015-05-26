@@ -20,8 +20,8 @@
 
  </databases>
 </olddb>
- <input_path>/home/gibdd/in/</input_path>
- <input_arc_path>/home/gibdd/in_arc/</input_arc_path>
- <output_path>/home/gibdd/out/</output_path>
- <output_path2>/home/all/gaiout/</output_path2>
+ <input_path>/home/git/fns/import/</input_path>
+ <input_arc_path>/home/git/fns/import_arc/in_arc/</input_arc_path>
+ <output_path>/home/git/fns/out/</output_path>
+ <output_path2>/home/git/fns/out2/</output_path2>
 </config>
