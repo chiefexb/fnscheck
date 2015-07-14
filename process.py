@@ -1,5 +1,21 @@
 #!/usr/bin/python
 #coding: utf8
+flds={
+"DEBTR_INN":1,
+"DEBTR_NAME":2,
+'NUM_ID':3,
+'DATE_ID':4,
+'SUM_ALL':5,
+'NUM_SV':6,
+'OSP':7
+}
+xlsflds={u"инн":"DEBTR_INN",
+u"плательщик":"DEBTR_NAME",
+u"номер документа":"NUM_ID",
+u"дата документа":"DATE_ID",
+u"сумма по документу":"SUM_ALL",
+u"лицо (адресат)":"OSP"
+}
 from lxml import etree
 import sys
 from os import *
@@ -49,7 +65,7 @@ def main():
   print "Для запуска набери: ./process.py upload|loadrbd|process|get"
   print '	loadrbd - Загрузка новых данных из РБД и очистка таблицы от предыдущей версии'
   print '	process - Поиск соответвий реестров из ГИБДД с данными из РБД'
-  print '       upload     - Загрузка файлов для проверки'
+  print '	upload     - Загрузка файлов для проверки'
   print '	get     - Выгрузка реестров для загрузки в подразделениях'
   sys.exit(2)
 
@@ -81,7 +97,13 @@ def main():
    #открыть файл
    wb=xlrd.book.open_workbook_xls(input_path+ff)
    ws=wb.sheet_by_index(0)
-   print ws.cell_value(2,0)
-  
+   m={}
+   for i in range(0,ws.row_len(0)):
+    t=ws.cell_value(0,i)
+    t.lstrip(' ').rstrip(' ')
+    t2=t.lower()
+    if (t2 in xlsflds.keys()):
+     m[ xlsflds[t2] ]=i
+   print m
 if __name__ == "__main__":
     main()
