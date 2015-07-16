@@ -1,14 +1,14 @@
 #!/usr/bin/python
 #coding: utf8
-flds={
-"DEBTR_INN":1,
-"DEBTR_NAME":2,
-'NUM_ID':3,
-'DATE_ID':4,
-'SUM_ALL':5,
-'NUM_SV':6,
-'OSP':7
-}
+flds=[
+"DEBTR_INN",
+"DEBTR_NAME",
+'NUM_ID',
+'DATE_ID',
+'SUM_ALL',
+'NUM_SV',
+'OSP'
+]
 xlsflds={u"инн":"DEBTR_INN",
 u"плательщик":"DEBTR_NAME",
 u"номер документа":"NUM_ID",
@@ -92,8 +92,14 @@ def main():
  st=''
  print input_path
  if sys.argv[1]=='upload':
+  try:
+   con = fdb.connect (host=main_host, database=main_dbname, user=main_user, password=main_password,charset='WIN1251')
+  except  Exception, e:
+   print("Ошибка при открытии базы данных:\n"+str(e))
+   sys.exit(2)
+  cur=con.cursor()
   for ff in listdir(input_path):
-   print ff
+   #print ff
    #открыть файл
    wb=xlrd.book.open_workbook_xls(input_path+ff)
    ws=wb.sheet_by_index(0)
@@ -104,6 +110,25 @@ def main():
     t2=t.lower()
     if (t2 in xlsflds.keys()):
      m[ xlsflds[t2] ]=i
-   print m
+   #print m
+   
+   sql="INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP) VALUES (?,?,?,?,?,?,?,?)" 
+   for i in range(2,4):#ws.nrows():
+    t=[]
+    t2=[] 
+    for mm in flds:
+     try:
+     #print mm,m[mm],type(mm),type(m[mm])
+      t.append( ws.cell_value(i,m[mm]))
+     except:
+      t.append(None)
+     #print t
+    id=getgenerator(cur,"PK_FNS")
+    t2=[id] 
+    t2.extend(t)
+    print t2,len(t2)
+    cur.execute (sql,t2)
+   con.commit()
+
 if __name__ == "__main__":
     main()
