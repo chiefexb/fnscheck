@@ -9,6 +9,15 @@ flds=[
 'NUM_SV',
 'OSP'
 ]
+fldstype={
+"DEBTR_INN":"intstr",
+"DEBTR_NAME":"str",
+'NUM_ID':'intstr',
+'DATE_ID':'date',
+'SUM_ALL':'float',
+'NUM_SV':'str',
+'OSP':'str'
+}
 xlsflds={u"инн":"DEBTR_INN",
 u"плательщик":"DEBTR_NAME",
 u"номер документа":"NUM_ID",
@@ -26,6 +35,38 @@ import timeit
 import time
 import xlrd
 from odsmod import *
+def conv (val,vtype):
+ rez=''
+ #print a,type(a),vtype
+ if vtype=='intstr':
+  try:
+   print int(val)
+   rez=str(int(val))
+  except:
+   rez=None
+ elif vtype=='str':
+  if str (type(val))=="<type 'unicode'>" or str(type(val))=="<type 'str'>":
+   rez=val
+  else:
+   try:
+    rez=str(val)
+   except:
+    rez=None
+ elif vtype=='float':
+  if str (type(val))=="<type 'float'>":
+   rez=val
+  else:
+   try:
+    rez=float(val)
+   except:
+    rez=None
+ elif vtype=='date':
+  print "date", val,type(val)
+  if str(type(val))=="<type 'datetime.datetime'>" :
+   rez=val
+  elif str(type(val))=="<type 'str'>" or  str (type(val))=="<type 'unicode'>":
+   rez=datetime.strptime(val,'%d.%m.%Y')
+ return rez
 def getgenerator(cur,gen):
  sq="SELECT GEN_ID("+gen+", 1) FROM RDB$DATABASE"
  try:
@@ -101,6 +142,7 @@ def main():
   for ff in listdir(input_path):
    #print ff
    #открыть файл
+   print ff
    wb=xlrd.book.open_workbook_xls(input_path+ff)
    ws=wb.sheet_by_index(0)
    m={}
@@ -110,23 +152,33 @@ def main():
     t2=t.lower()
     if (t2 in xlsflds.keys()):
      m[ xlsflds[t2] ]=i
-   #print m
+   print m
    
    sql="INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP) VALUES (?,?,?,?,?,?,?,?)" 
-   for i in range(2,4):#ws.nrows():
+   for i in range(2,6):#ws.nrows():
     t=[]
     t2=[] 
+    print "FF",i
     for mm in flds:
-     try:
-     #print mm,m[mm],type(mm),type(m[mm])
-      t.append( ws.cell_value(i,m[mm]))
-     except:
+     print "Поле",mm,i
+     if mm in m.keys():
+      #print "!",'ПОле',mm,m[mm]
+      #"тип m[mm],type(mm),type(m[mm])
+      s=ws.cell_value(i,m[mm])
+      s2=conv(s,fldstype[mm])
+      print  mm, s,s2
+      #print type(s),str(s),fldstype[mm],conv(s,fldstype[mm])
+      t.append(s2)
+     else:
       t.append(None)
      #print t
     id=getgenerator(cur,"PK_FNS")
     t2=[id] 
     t2.extend(t)
-    print t2,len(t2)
+    #print t
+    #print t2,len(t2)
+    #for tt in t2:
+    print t2
     cur.execute (sql,t2)
    con.commit()
 
