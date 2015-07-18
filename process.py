@@ -23,7 +23,14 @@ u"плательщик":"DEBTR_NAME",
 u"номер документа":"NUM_ID",
 u"дата документа":"DATE_ID",
 u"сумма по документу":"SUM_ALL",
-u"лицо (адресат)":"OSP"
+u"лицо (адресат)":"OSP",
+u"13. номер постановления по 47ст.":"NUM_ID",
+u"14. дата постановления по 47ст.":"DATE_ID",
+u"наименование плательщика ":"DEBTR_NAME",
+u"номер постановления":"NUM_ID",
+u"дата постановления":"DATE_ID",
+u"сумма":"SUM_ALL",
+u"лицо адресат":"OSP",
 }
 from lxml import etree
 import sys
@@ -35,7 +42,7 @@ import timeit
 import time
 import xlrd
 from odsmod import *
-def conv (val,vtype):
+def conv (val,vtype,xltype):
  rez=''
  #print a,type(a),vtype
  if vtype=='intstr':
@@ -62,7 +69,7 @@ def conv (val,vtype):
     rez=None
  elif vtype=='date':
   print "date", val,type(val)
-  if str(type(val))=="<type 'datetime.datetime'>" :
+  if str(type(val))=="<type 'datetime.datetime'>" or  str(type(val))=="<type 'float'>" :
    rez=val
   elif str(type(val))=="<type 'str'>" or  str (type(val))=="<type 'unicode'>":
    rez=datetime.strptime(val,'%d.%m.%Y')
@@ -130,6 +137,7 @@ def main():
 # rbd_user=rbd_database.find('user').text
 # rbd_password=rbd_database.find('password').text
 # rbd_host=rbd_database.find('hostname').text
+ fileconfig.close()
  st=''
  print input_path
  if sys.argv[1]=='upload':
@@ -154,8 +162,9 @@ def main():
      m[ xlsflds[t2] ]=i
    print m
    
-   sql="INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP) VALUES (?,?,?,?,?,?,?,?)" 
-   for i in range(2,6):#ws.nrows():
+       #INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+   sql="INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (?,?,?,?,?,?,?,?,?)" 
+   for i in range(2,ws.nrows):
     t=[]
     t2=[] 
     print "FF",i
@@ -173,14 +182,16 @@ def main():
       t.append(None)
      #print t
     id=getgenerator(cur,"PK_FNS")
+    t.append(ff)
     t2=[id] 
     t2.extend(t)
     #print t
     #print t2,len(t2)
     #for tt in t2:
-    print t2
+    print t2,i
     cur.execute (sql,t2)
    con.commit()
-
+  con.close()
+  
 if __name__ == "__main__":
     main()
