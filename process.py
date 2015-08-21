@@ -153,52 +153,74 @@ def main():
    print("Ошибка при открытии базы данных:\n"+str(e))
    sys.exit(2)
   cur=con.cursor()
+  fff=listdir(input_path)
+  st=u'Загружаем файлы для сверки. Найдено '+unicode( len (fff) )
+  inform(st)
   for ff in listdir(input_path):
    #print ff
    #открыть файл
    print ff
-   wb=xlrd.book.open_workbook_xls(input_path+ff)
-   ws=wb.sheet_by_index(0)
-   m={}
-   for i in range(0,ws.row_len(0)):
-    t=ws.cell_value(0,i)
-    t.lstrip(' ').rstrip(' ')
-    t2=t.lower()
-    if (t2 in xlsflds.keys()):
-     m[ xlsflds[t2] ]=i
-   #print m
+   #Проверяем был ли загружен файл.
+   sq='select count(pk) from fromfns    where fromfns.filename='+quoted(ff)
+   cur.execute(sq)
+   r=cur.fetchall()
+   cnt= r[0][0]
+   if cnt==0:
+    wb=xlrd.book.open_workbook_xls(input_path+ff)
+    ws=wb.sheet_by_index(0)
+    m={}
+    #st=u'Найдено '+unicode( ws.row_len(0) ) +u' строк.'
+    #inform(st)
+    for i in range(0,ws.row_len(0)):
+     t=ws.cell_value(0,i)
+     t.lstrip(' ').rstrip(' ')
+     t2=t.lower()
+     if (t2 in xlsflds.keys()):
+      m[ xlsflds[t2] ]=i
+    #print m
    
        #INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-   sql="INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (?,?,?,?,?,?,?,?,?)" 
-   for i in range(2,ws.nrows):
-    t=[]
-    t2=[] 
-    #print "FF",i
-    for mm in flds:
-     #print "Поле",mm,i
-     if mm in m.keys():
-      #print "!",'ПОле',mm,m[mm]
-      #"тип m[mm],type(mm),type(m[mm])
-      s=ws.cell_value(i,m[mm])
-      xltype=ws.cell_type(i,m[mm])
-      #print mm,xltype,s
-      s2=conv(s,fldstype[mm],xltype,wb)
-      #print  mm, s,s2
-      #print type(s),str(s),fldstype[mm],conv(s,fldstype[mm])
-      t.append(s2)
-     else:
-      t.append(None)
+    sql="INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (?,?,?,?,?,?,?,?,?)" 
+    st=u'Найдено '+unicode( ws.nrows ) +u' строк.'
+    inform(st)
+    for i in range(2,ws.nrows):
+     t=[]
+     t2=[] 
+     #print "FF",i
+     for mm in flds:
+      #print "Поле",mm,i
+      if mm in m.keys():
+       #print "!",'ПОле',mm,m[mm]
+       #"тип m[mm],type(mm),type(m[mm])
+       s=ws.cell_value(i,m[mm])
+       xltype=ws.cell_type(i,m[mm])
+       #print mm,xltype,s
+       s2=conv(s,fldstype[mm],xltype,wb)
+       if mm=='DEBTR_INN':
+        print 'INN'
+       	if len(s2) in (9,11):
+         s2='0'+s2
+       #print  mm, s,s2
+       #print type(s),str(s),fldstype[mm],conv(s,fldstype[mm])
+       t.append(s2)
+      else:
+       t.append(None)
+      #print t
+     id=getgenerator(cur,"PK_FNS")
+     t.append(ff)
+     t2=[id] 
+     t2.extend(t)
      #print t
-    id=getgenerator(cur,"PK_FNS")
-    t.append(ff)
-    t2=[id] 
-    t2.extend(t)
-    #print t
-    #print t2,len(t2)
-    #for tt in t2:
-    #print t2,i
-    cur.execute (sql,t2)
-   con.commit()
+     #print t2,len(t2)
+     #for tt in t2:
+     #print t2,i
+     cur.execute (sql,t2)
+    con.commit()
+    sq=''
+   else:
+    st=u'Файл ' +unicode(ff)+u' уже загружался раньше, пропускаю.'
+    inform(st)
+
   con.close()
   
 if __name__ == "__main__":
