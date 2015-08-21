@@ -32,6 +32,11 @@ u"дата постановления":"DATE_ID",
 u"сумма":"SUM_ALL",
 u"лицо адресат":"OSP",
 }
+#xlrd const cell type
+#xlrd.XL_CELL_BLANK    xlrd.XL_CELL_DATE     xlrd.XL_CELL_ERROR    xlrd.XL_CELL_TEXT     
+#xlrd.XL_CELL_BOOLEAN  xlrd.XL_CELL_EMPTY    xlrd.XL_CELL_NUMBER
+#xlrd.xldate_as_tuple(d,wb.datemode)
+#
 from lxml import etree
 import sys
 from os import *
@@ -42,12 +47,12 @@ import timeit
 import time
 import xlrd
 from odsmod import *
-def conv (val,vtype,xltype):
+def conv (val,vtype,xltype,wb):
  rez=''
  #print a,type(a),vtype
  if vtype=='intstr':
   try:
-   print int(val)
+   #print int(val)
    rez=str(int(val))
   except:
    rez=None
@@ -68,9 +73,10 @@ def conv (val,vtype,xltype):
    except:
     rez=None
  elif vtype=='date':
-  print "date", val,type(val)
-  if str(type(val))=="<type 'datetime.datetime'>" or  str(type(val))=="<type 'float'>" :
-   rez=val
+  #print "date", val,type(val),xltype
+  if xltype==xlrd.XL_CELL_DATE:   #str(type(val))=="<type 'datetime.datetime'>" or  str(type(val))=="<type 'float'>" :
+   year, month, day, hour, minute, second =xlrd.xldate_as_tuple(val,wb.datemode)
+   rez=datetime(year, month, day, hour, minute, 0)
   elif str(type(val))=="<type 'str'>" or  str (type(val))=="<type 'unicode'>":
    rez=datetime.strptime(val,'%d.%m.%Y')
  return rez
@@ -79,7 +85,7 @@ def getgenerator(cur,gen):
  try:
   cur.execute(sq)
  except:
-  print "err"
+  #print "err"
   g=-1
  else:
   r=cur.fetchall()
@@ -160,22 +166,24 @@ def main():
     t2=t.lower()
     if (t2 in xlsflds.keys()):
      m[ xlsflds[t2] ]=i
-   print m
+   #print m
    
        #INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
    sql="INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (?,?,?,?,?,?,?,?,?)" 
    for i in range(2,ws.nrows):
     t=[]
     t2=[] 
-    print "FF",i
+    #print "FF",i
     for mm in flds:
-     print "Поле",mm,i
+     #print "Поле",mm,i
      if mm in m.keys():
       #print "!",'ПОле',mm,m[mm]
       #"тип m[mm],type(mm),type(m[mm])
       s=ws.cell_value(i,m[mm])
-      s2=conv(s,fldstype[mm])
-      print  mm, s,s2
+      xltype=ws.cell_type(i,m[mm])
+      #print mm,xltype,s
+      s2=conv(s,fldstype[mm],xltype,wb)
+      #print  mm, s,s2
       #print type(s),str(s),fldstype[mm],conv(s,fldstype[mm])
       t.append(s2)
      else:
@@ -188,7 +196,7 @@ def main():
     #print t
     #print t2,len(t2)
     #for tt in t2:
-    print t2,i
+    #print t2,i
     cur.execute (sql,t2)
    con.commit()
   con.close()
