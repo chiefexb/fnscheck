@@ -3,7 +3,7 @@
   <hostname>localhost</hostname>
   <dbname>fnscheck</dbname>
   <user>SYSDBA</user>
-  <password>vSyWIFgg7</password>
+  <password></password>
  </main_database>
  <rbd>
   <hostname>10.9.4.11</hostname>
