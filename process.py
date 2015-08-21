@@ -217,6 +217,7 @@ def main():
      cur.execute (sql,t2)
     con.commit()
     sq=''
+    rename(input_path+ff, input_arc_path+ff)
    else:
     st=u'Файл ' +unicode(ff)+u' уже загружался раньше, пропускаю.'
     inform(st)

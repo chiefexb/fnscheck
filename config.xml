@@ -22,6 +22,7 @@
 </olddb>
  <input_path>/home/git/fns/import/</input_path>
  <input_arc_path>/home/git/fns/import_arc/in_arc/</input_arc_path>
+ <input_err_path>/home/git/fns/import_err/in_arc/</input_err_path>
  <output_path>/home/git/fns/out/</output_path>
  <output_path2>/home/git/fns/out2/</output_path2>
 </config>
