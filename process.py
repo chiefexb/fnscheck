@@ -78,7 +78,10 @@ def conv (val,vtype,xltype,wb):
    year, month, day, hour, minute, second =xlrd.xldate_as_tuple(val,wb.datemode)
    rez=datetime(year, month, day, hour, minute, 0)
   elif str(type(val))=="<type 'str'>" or  str (type(val))=="<type 'unicode'>":
-   rez=datetime.strptime(val,'%d.%m.%Y')
+   if len (val)>0:
+    rez=datetime.strptime(val,'%d.%m.%Y')
+   else:
+    rez=None
  return rez
 def getgenerator(cur,gen):
  sq="SELECT GEN_ID("+gen+", 1) FROM RDB$DATABASE"
@@ -131,6 +134,8 @@ def main():
 
  nd=xmlroot.find('input_arc_path')
  input_arc_path=nd.text
+ nd=xmlroot.find('input_err_path')
+ input_err_path=nd.text
 
  main_database=xmlroot.find('main_database')
  main_dbname=main_database.find('dbname').text
@@ -159,7 +164,8 @@ def main():
   for ff in listdir(input_path):
    #print ff
    #открыть файл
-   print ff
+   st=u'Загружаем файл: '+unicode(ff)
+   inform(st)
    #Проверяем был ли загружен файл.
    sq='select count(pk) from fromfns    where fromfns.filename='+quoted(ff)
    cur.execute(sq)
@@ -197,9 +203,10 @@ def main():
        #print mm,xltype,s
        s2=conv(s,fldstype[mm],xltype,wb)
        if mm=='DEBTR_INN':
-        print 'INN'
-       	if len(s2) in (9,11):
-         s2='0'+s2
+        #print 'INN'
+        if s2 <> None:
+       	 if len(s2) in (9,11):
+          s2='0'+s2
        #print  mm, s,s2
        #print type(s),str(s),fldstype[mm],conv(s,fldstype[mm])
        t.append(s2)
@@ -214,14 +221,25 @@ def main():
      #print t2,len(t2)
      #for tt in t2:
      #print t2,i
-     cur.execute (sql,t2)
+     try:
+      cur.execute (sql,t2)
+     except:
+      st=u'Ошибка в скрипте' 
+      inform (st)
+      st=unicode(sql)
+      inform (st)
+      st=unicode(t2)
+      inform (st)
+      #sys.exit(2)
     con.commit()
     sq=''
     rename(input_path+ff, input_arc_path+ff)
    else:
     st=u'Файл ' +unicode(ff)+u' уже загружался раньше, пропускаю.'
     inform(st)
-
+    rename(input_path+ff, input_err_path+ff)
+  st=u'=======  РАБОТА ЗАКОНЧЕНА  ================================================'
+  inform(st)
   con.close()
   
 if __name__ == "__main__":
