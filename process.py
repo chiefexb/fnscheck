@@ -241,6 +241,17 @@ def main():
   st=u'=======  РАБОТА ЗАКОНЧЕНА  ================================================'
   inform(st)
   con.close()
-  
+ if sys.argv[1]=='loadrbd':
+  try:
+   con = fdb.connect (host=main_host, database=main_dbname, user=main_user, password=main_password,charset='WIN1251')
+  except  Exception, e:
+   print("Ошибка при открытии базы данных:\n"+str(e))
+   sys.exit(2)
+  try:
+   con2 = fdb.connect (host=rbd_host, database=rbd_dbname, user=rbd_user,  password=rbd_password,charset='WIN1251')
+  except  Exception, e:
+   print("Ошибка при открытии базы данных:\n"+str(e))
+   sys.exit(2)
+  cur = con.cursor()  
 if __name__ == "__main__":
     main()
