@@ -143,11 +143,11 @@ def main():
  main_password=main_database.find('password').text
  main_host=main_database.find('hostname').text
 
-# rbd_database=xmlroot.find('rbd')
-# rbd_dbname=rbd_database.find('dbname').text
-# rbd_user=rbd_database.find('user').text
-# rbd_password=rbd_database.find('password').text
-# rbd_host=rbd_database.find('hostname').text
+ rbd_database=xmlroot.find('rbd')
+ rbd_dbname=rbd_database.find('dbname').text
+ rbd_user=rbd_database.find('user').text
+ rbd_password=rbd_database.find('password').text
+ rbd_host=rbd_database.find('hostname').text
  fileconfig.close()
  st=''
  print input_path
@@ -253,5 +253,24 @@ def main():
    print("Ошибка при открытии базы данных:\n"+str(e))
    sys.exit(2)
   cur = con.cursor()  
+  cur2=con2.cursor()
+  sql="SELECT  doc_ip_doc.id ,doc_ip_doc.id_docno,doc_ip_doc.id_docdate,doc_ip.ip_risedate,doc_ip.ip_date_finish, document.doc_number, doc_ip_doc.id_dbtr_name,doc_ip.id_debtsum, document.docstatusid,doc_ip.ip_exec_prist_name,doc_ip_doc.id_crdr_name,doc_ip.article,doc_ip.point,doc_ip.subpoint FROM DOC_IP_DOC DOC_IP_DOC JOIN DOC_IP ON DOC_IP_DOC.ID=DOC_IP.ID JOIN DOCUMENT ON DOC_IP.ID=DOCUMENT.ID  where document.docstatusid not in (-1,5,27,28) and  (CAST (doc_ip_doc.id_crdr_entid as varchar(10))) starting with '1' and doc_ip_doc.id_crdr_entid <>1695"
+  sql2="INSERT INTO DOCIPDOC (ID, ID_DOCNO, ID_DOCDATE, DOC_NUMBER, IP_RISE_DATR, IP_DATE_FINISH, NUMDOC, ID_DBTR_NAME, ID_DEBTSUM, DOCSTATUSID, IP_EXEC_PRIST_NAME, ID_CRDR_NAME, ARTICLE, POINT, SUBPOINT) VALUES (?,?,?,?,?,? ?,?,?,?,?,?,?,?,?)"
+  with Profiler() as p:
+   cur2.execute(sql)
+   try:
+    r=cur2.fetchall()
+   except:
+    print sql
+    print rr
+    sys.exit(2)
+   for rr in r:
+    try:
+     cur.execute( sql2,rr)
+    except:
+     print sql
+     print rr
+     sys.exit(2)
+   con.commit()
 if __name__ == "__main__":
     main()
