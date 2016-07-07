@@ -47,6 +47,7 @@ import timeit
 import time
 import xlrd
 from odsmod import *
+from sverka import *
 def conv (val,vtype,xltype,wb):
  rez=''
  #print a,type(a),vtype
@@ -127,6 +128,11 @@ def main():
   sys.exit(2)
 
  fileconfig=file('./config.xml')
+ fileconfig2=file('./sverka.xml')
+
+ xml2=etree.parse(fileconfig2)
+ xmlroot2=xml2.getroot()
+ 
  xml=etree.parse(fileconfig)
  xmlroot=xml.getroot()
  nd=xmlroot.find('input_path')
@@ -273,5 +279,25 @@ def main():
       print rrr
      sys.exit(2)
    con.commit()
+ if sys.argv[1]=='loadold': 
+
+  print 'loadOld'
+  years=['d2007']
+  dbm=[] 
+  for d  in xmlroot2.getchildren():
+   if d.tag in years:
+    for a in d.getchildren():
+     print a.tag, a.text
+     dbs={}
+     dbs['year']=d.tag
+     dbs['alias']=a.tag
+     for itms in a.attrib.items():
+      dbs[itms[0]]=itms[1]
+     dbm.append(dbs)
+  print 'DBM ',len(dbm)
+  print dbm[0]
+  sql="select     ip.num_ip ,ip.date_ip_in,ip.date_ip_out,ip.num_id,ip.date_id_send,ip.name_d ,name_v,adr_d,adr_v,innd,name_id,name_org_id,why,sum_,sum_is,ip.nump26,num_pp,ip.reason_out,ip.text_pp ,fio_spi,date_spi_take,total_sum ,main_dolg ,fakt_sum_is from ip  where ip.num_ip not containing 'СД' and ip.num_ip not containing 'СВ'"
+  r=crowl1(dbm[0],sql)
+  print len(r)
 if __name__ == "__main__":
     main()
