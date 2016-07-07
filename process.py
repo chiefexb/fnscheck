@@ -280,7 +280,12 @@ def main():
      sys.exit(2)
    con.commit()
  if sys.argv[1]=='loadold': 
-
+  try:
+   con = fdb.connect (host=main_host, database=main_dbname, user=main_user, password=main_password,charset='WIN1251')
+  except  Exception, e:
+   print("Ошибка при открытии базы данных:\n"+str(e))
+   sys.exit(2)
+  cur=con.cursor()
   print 'loadOld'
   years=['d2007']
   dbm=[] 
@@ -295,9 +300,40 @@ def main():
       dbs[itms[0]]=itms[1]
      dbm.append(dbs)
   print 'DBM ',len(dbm)
+  #print dbm[0]
+  sql="select     ip.num_ip ,ip.date_ip_in,ip.date_ip_out,ip.num_id,ip.date_id_send,ip.name_d ,name_v,adr_d,adr_v,innd,name_id,name_org_id,why,sum_,sum_is,ip.nump26,num_pp,ip.reason_out,ip.text_pp ,fio_spi,date_spi_take,total_sum ,main_dolg ,fakt_sum_is,pk,fk from ip  where ip.num_ip not containing 'СД' and ip.num_ip not containing 'СВ'"
+  sql2='select sd,p_address from s_subdividings'
+  sql3='INSERT INTO OLD_IP (ID, NUM_IP, DATE_IP_IN, DATE_IP_OUT, NUM_ID, DATE_ID_SEND, NAME_D, NAME_V, ADR_D, ADR_V, INND, NAME_ID, NAME_ORG_ID, WHY, SUM_, SUM_IS, NUMP26, NUM_PP, REASON_OUT, TEXT_PP, FIO_SPI, DATE_SPI_TAKE, TOTAL_SUM, MAIN_DOLG, FAKT_SUM_IS, PK, FK, NAME_DB, SUBDIV, YEAR_) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+  sql4='ALTER SEQUENCE OLDIP_ID RESTART WITH 1'
+  sql5='delete from OLD_IP'
+  #ставим
   print dbm[0]
-  sql="select     ip.num_ip ,ip.date_ip_in,ip.date_ip_out,ip.num_id,ip.date_id_send,ip.name_d ,name_v,adr_d,adr_v,innd,name_id,name_org_id,why,sum_,sum_is,ip.nump26,num_pp,ip.reason_out,ip.text_pp ,fio_spi,date_spi_take,total_sum ,main_dolg ,fakt_sum_is from ip  where ip.num_ip not containing 'СД' and ip.num_ip not containing 'СВ'"
   r=crowl1(dbm[0],sql)
-  print len(r)
+  name_db=dbm[0]['db']
+  subdiv=getreq(dbm[0],sql2)[0]
+  year=(dbm[0]['year']).replace('d','')
+  for rr in r: 
+   print len(r)
+   print rr
+   #вычисляем id
+   #название БД
+   #год
+   #название подразделения
+   #расширяем строку и вставляем в БД
+   id=getgenerator(cur,'oldip_id')
+   #name_db=dbm[0]['db']
+   #subdiv=getreq(dbm[0],sql2)[0]
+   #year=(dbm[0]['year']).replace('d','')
+   #print "YEAR",year,'SUB',subdiv
+   #print type( id)
+   pp=[]
+   pp.append(id)
+   print pp
+   pp.extend(r[0])
+   pp.extend([name_db,subdiv,year])
+   cur.execute(sql3,pp)
+  con.commit()
+  con.close()
+  print pp
 if __name__ == "__main__":
     main()

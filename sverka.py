@@ -38,6 +38,18 @@ def crowl1(pp,sql):
   cur.execute (sql)
   r=cur.fetchall()
  return r
+def getreq (dbm,sql):
+ rez=[]
+ pp=dbm
+ try:
+  con = fdb.connect (host=pp['host'], database=pp['db'], user='SYSDBA', password=pp['password'],charset='WIN1251')
+ except  Exception, e:
+  print pp['host'],pp['db'],pp['password'],'FAIL',e
+ else:
+  cur=con.cursor()
+  cur.execute(sql)
+  rez=cur.fetchone()
+ return rez
 def crowl(dbm,sql):
  rez=[]
  i=0
