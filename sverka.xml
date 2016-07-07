@@ -1,0 +1,66 @@
+<config>
+ <d2007>
+  <a0901 dbname="" db="all2007_01" host="10.9.4.14" password="TMohXJDr"></a0901>
+  <a0902 dbname="" db="all2007_02" host="10.9.4.14" password="TMohXJDr"></a0902>
+  <a0903 dbname="" db="all2007_03" host="10.9.4.14" password="TMohXJDr"></a0903>
+  <a0905 dbname="" db="all2007_05" host="10.9.4.14" password="TMohXJDr"></a0905>
+  <a0907 dbname="" db="all2007_07" host="10.9.4.14" password="TMohXJDr"></a0907>
+  <a0908 dbname="" db="all2007_08" host="10.9.4.14" password="TMohXJDr"></a0908>
+  <a0909 dbname="" db="all2007_09" host="10.9.4.14" password="TMohXJDr"></a0909>
+  <a0910 dbname="" db="all2007_10" host="10.9.4.14" password="TMohXJDr"></a0910>
+  <a0911 dbname="" db="all2007_11" host="10.9.4.14" password="TMohXJDr"></a0911>
+ </d2007>
+ <d2008>
+  <a0901 dbname="" db="all2008_01" host="10.9.4.14" password="TMohXJDr"></a0901>
+  <a0902 dbname="" db="all2008_02" host="10.9.4.14" password="TMohXJDr"></a0902>
+  <a0903 dbname="" db="all2008_03" host="10.9.4.14" password="TMohXJDr"></a0903>
+  <a0904 dbname="" db="all2008_04" host="10.9.4.14" password="TMohXJDr"></a0904>
+  <a0905 dbname="" db="all2008_05" host="10.9.4.14" password="TMohXJDr"></a0905>
+  <a0906 dbname="" db="all2008_06" host="10.9.4.14" password="TMohXJDr"></a0906>
+  <a0907 dbname="" db="all2008_07" host="10.9.4.14" password="TMohXJDr"></a0907>
+  <a0908 dbname="" db="all2008_08" host="10.9.4.14" password="TMohXJDr"></a0908>
+  <a0909 dbname="" db="all2008_09" host="10.9.4.14" password="TMohXJDr"></a0909>
+  <a0910 dbname="" db="all2008_10" host="10.9.4.14" password="TMohXJDr"></a0910>
+  <a0911 dbname="" db="all2008_11" host="10.9.4.14" password="TMohXJDr"></a0911>
+ </d2008>
+ <d2009>
+  <a0901 dbname="" db="all2009_01" host="10.9.4.14" password="TMohXJDr"></a0901>
+  <a0902 dbname="" db="all2009_02" host="10.9.4.14" password="TMohXJDr"></a0902>
+  <a0903 dbname="" db="all2009_03" host="10.9.4.14" password="TMohXJDr"></a0903>
+  <a0904 dbname="" db="all2009_04" host="10.9.4.14" password="TMohXJDr"></a0904>
+  <a0905 dbname="" db="all2009_05" host="10.9.4.14" password="TMohXJDr"></a0905>
+  <a0906 dbname="" db="all2009_06" host="10.9.4.14" password="TMohXJDr"></a0906>
+  <a0907 dbname="" db="all2009_07" host="10.9.4.14" password="TMohXJDr"></a0907>
+  <a0908 dbname="" db="all2009_08" host="10.9.4.14" password="TMohXJDr"></a0908>
+  <a0909 dbname="" db="all2009_09" host="10.9.4.14" password="TMohXJDr"></a0909>
+  <a0910 dbname="" db="all2009_10" host="10.9.4.14" password="TMohXJDr"></a0910>
+  <a0911 dbname="" db="all2009_11" host="10.9.4.14" password="TMohXJDr"></a0911>
+  <a0912 dbname="" db="all2009_12" host="10.9.4.14" password="TMohXJDr"></a0912>
+ </d2009>
+<d2010>
+  <a0902 dbname="" db="all2010_02" host="10.9.4.14" password="TMohXJDr"></a0902>
+  <a0903 dbname="" db="all2010_03" host="10.9.4.14" password="TMohXJDr"></a0903>
+  <a0904 dbname="" db="all2010_04" host="10.9.4.14" password="TMohXJDr"></a0904>
+  <a0905 dbname="" db="all2010_05" host="10.9.4.14" password="TMohXJDr"></a0905>
+  <a0906 dbname="" db="all2010_06" host="10.9.4.14" password="TMohXJDr"></a0906>
+  <a0907 dbname="" db="all2010_07" host="10.9.4.14" password="TMohXJDr"></a0907>
+  <a0908 dbname="" db="all2010_08" host="10.9.4.14" password="TMohXJDr"></a0908>
+  <a0909 dbname="" db="all2010_09" host="10.9.4.14" password="TMohXJDr"></a0909>
+  <a0910 dbname="" db="all2010_10" host="10.9.4.14" password="TMohXJDr"></a0910>
+  <a0911 dbname="" db="all2010_11" host="10.9.4.14" password="TMohXJDr"></a0911>
+  <a0912 dbname="" db="all2010_12" host="10.9.4.14" password="TMohXJDr"></a0912>
+ </d2010>
+<d2011>
+  <a0902 dbname="" db="all2011_02" host="10.9.4.14" password="TMohXJDr"></a0902>
+  <a0903 dbname="" db="all2011_03" host="10.9.4.14" password="TMohXJDr"></a0903>
+  <a0904 dbname="" db="all2011_04" host="10.9.4.14" password="TMohXJDr"></a0904>
+  <a0905 dbname="" db="all2011_05" host="10.9.4.14" password="TMohXJDr"></a0905>
+  <a0906 dbname="" db="all2011_06" host="10.9.4.14" password="TMohXJDr"></a0906>
+  <a0907 dbname="" db="all2011_07" host="10.9.4.14" password="TMohXJDr"></a0907>
+  <a0908 dbname="" db="all2011_08" host="10.9.4.14" password="TMohXJDr"></a0908>
+  <a0909 dbname="" db="all2011_09" host="10.9.4.14" password="TMohXJDr"></a0909>
+  <a0910 dbname="" db="all2011_10" host="10.9.4.14" password="TMohXJDr"></a0910>
+  <a0911 dbname="" db="all2011_11" host="10.9.4.14" password="TMohXJDr"></a0911>
+  <a0912 dbname="" db="all2011_12" host="10.9.4.14" password="TMohXJDr"></a0912>
+ </d2011>
+</config>

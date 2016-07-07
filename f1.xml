@@ -1,0 +1,12 @@
+<filter>
+ <name>Возврат ИД, ФНС</name>
+ <grids>
+  <header>
+   <text>Отказаные ФНС </text> 
+   <sql text='Подразделение,адрес'>select sd,p_address from s_subdividings</sql>
+    </header>
+  <body>
+   <sql>select * from id      where (RESULT %not_equal 'возбуждено ИП') and (VID_ORG_ID_TTL containing 'НАЛОГОВЫЙ ОРГАН') </sql>
+  </body>
+ </grids>
+</filter>
