@@ -95,8 +95,11 @@ def getgenerator(cur,gen):
   r=cur.fetchall()
   g=r[0][0]
  return g
-def inform(st):
- logging.info(st)
+def inform(st, mestype):
+ if mestype=='info':
+  logging.info(st)
+ if mestype=='error':
+  logging.error(st)
  print st
  return
 class Profiler(object):
@@ -111,10 +114,10 @@ class Profiler(object):
 def quoted(a):
  st=u"'"+a+u"'"
  return st
-def inform(st):
- logging.info(st)
- print st
- return
+#def inform(st,'info'):
+# logging.info(st)
+# print st
+# return
 def main():
  #лог
  logging.basicConfig(format = u'%(levelname)-8s [%(asctime)s] %(message)s',level = logging.DEBUG, filename = './process.log')
@@ -166,12 +169,12 @@ def main():
   cur=con.cursor()
   fff=listdir(input_path)
   st=u'Загружаем файлы для сверки. Найдено '+unicode( len (fff) )
-  inform(st)
+  inform(st,'info')
   for ff in listdir(input_path):
    #print ff
    #открыть файл
    st=u'Загружаем файл: '+unicode(ff)
-   inform(st)
+   inform(st,'info')
    #Проверяем был ли загружен файл.
    sq='select count(pk) from fromfns    where fromfns.filename='+quoted(ff)
    cur.execute(sq)
@@ -194,7 +197,7 @@ def main():
        #INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
     sql="INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (?,?,?,?,?,?,?,?,?)" 
     st=u'Найдено '+unicode( ws.nrows ) +u' строк.'
-    inform(st)
+    inform(st,'info')
     for i in range(2,ws.nrows):
      t=[]
      t2=[] 
@@ -231,21 +234,21 @@ def main():
       cur.execute (sql,t2)
      except:
       st=u'Ошибка в скрипте' 
-      inform (st)
+      inform (st,'info')
       st=unicode(sql)
-      inform (st)
+      inform (st,'info')
       st=unicode(t2)
-      inform (st)
+      inform (st,'info')
       #sys.exit(2)
     con.commit()
     sq=''
     rename(input_path+ff, input_arc_path+ff)
    else:
     st=u'Файл ' +unicode(ff)+u' уже загружался раньше, пропускаю.'
-    inform(st)
+    inform(st,'info')
     rename(input_path+ff, input_err_path+ff)
   st=u'=======  РАБОТА ЗАКОНЧЕНА  ================================================'
-  inform(st)
+  inform(st,'info')
   con.close()
  if sys.argv[1]=='loadrbd':
   try:
@@ -280,14 +283,16 @@ def main():
      sys.exit(2)
    con.commit()
  if sys.argv[1]=='loadold': 
+  st=u'Загружаем старые базы '
+  inform(st,'info')
   try:
    con = fdb.connect (host=main_host, database=main_dbname, user=main_user, password=main_password,charset='WIN1251')
   except  Exception, e:
    print("Ошибка при открытии базы данных:\n"+str(e))
    sys.exit(2)
   cur=con.cursor()
-  print 'loadOld'
-  years=['d2007']
+  #print 'loadOld'
+  years= ['d2007','d2008','d2009','d2011']
   dbm=[] 
   for d  in xmlroot2.getchildren():
    if d.tag in years:
@@ -307,33 +312,39 @@ def main():
   sql4='ALTER SEQUENCE OLDIP_ID RESTART WITH 1'
   sql5='delete from OLD_IP'
   #ставим
-  print dbm[0]
-  r=crowl1(dbm[0],sql)
-  name_db=dbm[0]['db']
-  subdiv=getreq(dbm[0],sql2)[0]
-  year=(dbm[0]['year']).replace('d','')
-  for rr in r: 
-   print len(r)
-   print rr
-   #вычисляем id
-   #название БД
-   #год
-   #название подразделения
-   #расширяем строку и вставляем в БД
-   id=getgenerator(cur,'oldip_id')
-   #name_db=dbm[0]['db']
-   #subdiv=getreq(dbm[0],sql2)[0]
-   #year=(dbm[0]['year']).replace('d','')
-   #print "YEAR",year,'SUB',subdiv
-   #print type( id)
-   pp=[]
-   pp.append(id)
-   print pp
-   pp.extend(r[0])
-   pp.extend([name_db,subdiv,year])
-   cur.execute(sql3,pp)
-  con.commit()
+  
+  print "DBM",  len (dbm),dbm
+  with Profiler() as p:
+   for dd in dbm:
+    #with Profiler() as p:
+     r=crowl1(dd,sql)
+     name_db=dd['db']
+     subdiv=getreq(dd,sql2)[0]
+     year=(dd['year']).replace('d','')
+     st=u'Загружаем старые базы '+unicode(subdiv)+'; '+unicode(name_db)+'; '+unicode(year)+'; '+unicode(len(r))+u' записей.'
+     inform(st,'info')
+     for rr in r: 
+      #print len(r)
+      #print rr
+      #расширяем строку и вставляем в БД
+      id=getgenerator(cur,'oldip_id')
+      #print "YEAR",year,'SUB',subdiv
+      #print type( id)
+      pp=[]
+      pp.append(id)
+      #print pp
+      pp.extend(rr)
+      pp.extend([name_db,subdiv,year])
+      try:
+       cur.execute(sql3,pp)
+      except Exception, e:
+       st=u'Ошибка при выполении запроса'+unicode(name_db)+';'+sql3+unicode(e)
+       inform(st,'error') 
+       inform(unicode(pp),'error')
+       sys.exit(2)
+      
+     con.commit()
   con.close()
-  print pp
+  #print pp
 if __name__ == "__main__":
     main()
