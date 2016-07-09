@@ -34,7 +34,7 @@ def crowl1(pp,sql):
   print pp['host'],pp['db'],pp['password'],'FAIL',e
  else:
   cur=con.cursor()
-  print sql
+  #print sql
   cur.execute (sql)
   r=cur.fetchall()
  return r
