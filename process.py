@@ -184,6 +184,7 @@ def main():
     wb=xlrd.book.open_workbook_xls(input_path+ff)
     ws=wb.sheet_by_index(0)
     m={}
+    print 
     #st=u'Найдено '+unicode( ws.row_len(0) ) +u' строк.'
     #inform(st)
     for i in range(0,ws.row_len(0)):
@@ -192,7 +193,7 @@ def main():
      t2=t.lower()
      if (t2 in xlsflds.keys()):
       m[ xlsflds[t2] ]=i
-    #print m
+    print m
    
        #INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
     sql="INSERT INTO FROMFNS (PK, DEBTR_INN, DEBTR_NAME, NUM_ID, DATE_ID, SUM_ALL, NUM_SV, OSP, FILENAME) VALUES (?,?,?,?,?,?,?,?,?)" 
@@ -209,7 +210,7 @@ def main():
        #"тип m[mm],type(mm),type(m[mm])
        s=ws.cell_value(i,m[mm])
        xltype=ws.cell_type(i,m[mm])
-       #print mm,xltype,s
+       print mm,xltype,s
        s2=conv(s,fldstype[mm],xltype,wb)
        if mm=='DEBTR_INN':
         #print 'INN'
@@ -229,7 +230,7 @@ def main():
      #print t
      #print t2,len(t2)
      #for tt in t2:
-     #print t2,i
+     print t2,i
      try:
       cur.execute (sql,t2)
      except:
@@ -242,7 +243,7 @@ def main():
       #sys.exit(2)
     con.commit()
     sq=''
-    rename(input_path+ff, input_arc_path+ff)
+    #rename(input_path+ff, input_arc_path+ff)
    else:
     st=u'Файл ' +unicode(ff)+u' уже загружался раньше, пропускаю.'
     inform(st,'info')
